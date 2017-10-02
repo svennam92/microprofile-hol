@@ -88,7 +88,7 @@ deployment "microservice-webapp-sample" created
 service "webapp-service" created
 ```
 
-After you have created all the services and deployments, you'll have to wait for 5 to 10 minutes. However, you can check the status of your deployment on Kubernetes UI. Run 'kubectl proxy' and go to URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready. It'll look like this once it's ready:
+After you have created all the services and deployments, you'll have to wait for 5 to 10 minutes. However, you can check the status of your deployment on Kubernetes UI. Run `kubectl proxy` and go to URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready. It'll look like this once it's ready:
 
 <img src="../images/ready.png"  width="700">
 

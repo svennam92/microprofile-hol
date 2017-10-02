@@ -1,44 +1,90 @@
-# View, edit and build your Microprofile Java repositories
+# Exercise 3
+## Use Helm to deploy fabric prerequisites
 
-Navigate to your Java Microprofile directory. Here, you should see a number of directories. Primarily, the following folders contain all the microservices that make up our application:
+Before we "Dockerize" the microservices we compiled and packaged in [Exercise 2](ex2.md), let's deploy some prerequisites to our Kubernetes cluster. It's a good idea to do this ahead of time as it may take up to 20 minutes for it to install.
 
-```
-sample.microservicebuilder.schedule
-sample.microservicebuilder.session
-sample.microservicebuilder.speaker
-sample.microservicebuilder.vote
-sample.microservicebuilder.web-app
-```
+## Prerequisites
 
-Each of these repos represents a MicroProfile Java microservice. Notably, you'll see that each of these repos has a server.xml file - this is a descriptor that tells the Liberty runtime which features to enable for the corresponding microservice. You'll note that each has the following server.xml entry:
+Ensure that your cluster has finished deploying. Navigate to your [dashboard on Bluemix](https://console.bluemix.net/containers-kubernetes/home/clusters) and double check that there is a green "Ready" icon.
 
-```
-<feature>microProfile-1.0</feature>
-```
+If it's still not ready, you'll need to wait before the following steps. Things you can do while you wait:
 
-This feature contains a set of capabilities that has been decided by the Microprofile community to serve the common requirements for creating microservices.
+* Check out the [Bonus exercise](ex_bonus.md) to learn how to create new microservices using the [Microservice Builder](https://developer.ibm.com/microservice-builder/)
+* Navigate the microservices in your `~/JavaMicroprofile` directory to familiarize yourself with the application architecture. For a more guided experience, check out the resources on [microprofile.io](https://microprofile.io/project/eclipse/microprofile-conference).
 
-Within each directory is a Maven based project structure which can be imported into Eclipse or your favorite IDE. To make updates to the microservice, simply make the code changes and run `mvn package` to rebuild the application. This creates a newly compiled and packaged `.war` file in the `target` directory. Keep this in mind because we'll use this in the next exercise.
+If the cluster is not working or has not spwaned in time for you to continue with the lab, please see the [instructions here](backup.md).
 
-## Build your microservices
-As the microservices have already been generated, run through all the directories to ensure that the microservices are up-to-date and passing tests. Run the following commands:
+### Configure CLI to connect to your Kubernetes Cluster
+
+You should have already installed the Bluemix CLI as explained in the [main README](../README.md). Now, install the containers plugin for the CLI by running the following in your terminal:
 
 ```
-cd ~/JavaMicroprofile/sample.microservicebuilder.schedule
-mvn clean package
-
-cd ~/JavaMicroprofile/sample.microservicebuilder.session
-mvn clean package
-
-cd ~/JavaMicroprofile/sample.microservicebuilder.speaker
-mvn clean package
-
-cd ~/JavaMicroprofile/sample.microservicebuilder.vote
-mvn clean package
-
-cd ~/JavaMicroprofile/sample.microservicebuilder.web-app
-mvn clean package
+bx plugin install container-service -r Bluemix
 ```
 
-At each step of the way, you should have seen a message indicating `BUILD SUCCESS`. We're now ready to create Docker images for each our Microprofile-based Java microservices.
+If you haven't already, make sure you're logged in: `bx login`. If prompted, use API endpoint `api.ng.bluemix.net`
 
+Run `bx cs clusters` to see all your clusters in Bluemix - there should only be one.
+
+Run `bx cs cluster-config <cluster_name>` to download the configuration file that allows you to access the cluster. It tells you to run a `export` command. Copy-paste and execute that command.
+
+Run `kubectl cluster-info` to ensure that you're connected to the running Kubernetes Cluster. You should see something like this:
+
+```
+⌞~/MicroprofileHOL⌟ ➤ kubectl cluster-info
+Kubernetes master is running at https://184.173.44.62:27192
+Heapster is running at https://184.173.44.62:27192/api/v1/proxy/namespaces/kube-system/services/heapster
+KubeDNS is running at https://184.173.44.62:27192/api/v1/proxy/namespaces/kube-system/services/kube-dns
+kubernetes-dashboard is running at https://184.173.44.62:27192/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
+## Helm - Streamline Kubernetes installations
+
+Helm is a tool that allows you to manage Kubernetes "charts". Charts are pre-configured Kubernetes resources.
+
+_Note: Lab Attendees - this CLI tool is already installed on your VMs_
+
+For our microservices to work, we need to deploy a fabric layer provided to us by Microservice Builder, an IBM tool to streamline development. This fabric allows us to connect up Liberty Microprofile instances with other services. In addition, we'll also deploy a sample ELK stack which allows us to retrieve metrics for our application in a Kibana dashboard.
+
+### Installing prerequisites to our cluster
+
+Initialize the helm installation
+
+```
+helm init
+```
+
+Install the fabric
+
+```
+helm repo add mb http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/microservicebuilder/helm/
+helm install --name fabric mb/fabric
+```
+
+Install the ELK stack
+
+```
+helm repo add mb-sample https://wasdev.github.io/sample.microservicebuilder.helm.elk/charts
+helm install --name sample-elk mb-sample/sample-elk
+```
+
+### Verify installation
+
+Run `kubectl get pods --show-all`
+
+You should see the following pods getting installed:
+```
+⌞~/MicroprofileHOL⌟ ➤ kubectl get pods --show-all
+NAME                                     READY     STATUS              RESTARTS   AGE
+fabric-zipkin-992988055-88jls            1/1       Running             0          27s
+key-retrieval-deploy-fn832               0/1       ContainerCreating   0          16s
+kibana-dashboard-deploy-hbn7x            0/1       ContainerCreating   0          16s
+sample-elk-sample-elk-2521815307-mscw4   0/3       ContainerCreating   0          16s
+secret-generator-deploy-znv3c            0/1       ContainerCreating   0          27s
+```
+
+### Next steps
+
+Now that we've kicked off the prereq installation on our cluster, let's start dockerizing the microservices we compiled in the previous step. Continue on to [Exercise 4](ex4.md).

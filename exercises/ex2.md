@@ -7,8 +7,12 @@
 
 ### Build and Push your Docker images
 
-In this step, we'll build and push the Docker images representing each of our microservices as well as an Nginx loadbalancer. Be sure to login first using `docker login`.
+In this step, we'll build and push the Docker images representing each of our microservices as well as an Nginx loadbalancer. 
 
+#### Login to Docker
+Be sure to login first using `docker login`.
+
+#### Push Docker Images to Docker Hub
 When running the following steps, make sure to replace `<docker_namespace>` with your own Docker ID. In my case, it's `svennam92`.
 
 ```

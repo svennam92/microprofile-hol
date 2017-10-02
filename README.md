@@ -30,7 +30,7 @@ Install by Bluemix CLI - Find the appropriate installer and follow the instructi
 
 When logging in with `bx login`, use API endpoint `api.ng.bluemix.net`
 
-#### Install Docker
+### Install Docker
 
 Installing Docker allows you to create Docker images, publish them to the registry and run them natively as virtual machines.
 

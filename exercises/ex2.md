@@ -9,11 +9,9 @@
 
 In this step, we'll build and push the Docker images representing each of our microservices as well as an Nginx loadbalancer. Be sure to login first using `docker login`.
 
-When running the following steps, make sure to replace `<docker_namespace>` with your own Docker ID. In my case, it's `svennam92`.
+When running the following steps, make sure to replace `<docker_namespace>` with your own Docker ID. In my case, it's `svennam92`. Make sure you `cd` to the top-level directory of the git repository.
 
 ```
-cd ~/JavaMicroprofile
-
 docker build -t <docker_namespace>/microservice-webapp sample.microservicebuilder.web-app
 docker push <docker_namespace>/microservice-webapp
 

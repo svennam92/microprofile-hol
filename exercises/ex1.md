@@ -1,11 +1,7 @@
 # Exercise 1
 ## View, edit and build your Microprofile Java repositories
 
-Navigate to your Java Microprofile directory.
-
-```
-cd ~/JavaMicroprofile
-```
+Clone or download this repository and cd to it.
 
 Here you should see a number of directories. Primarily, the following folders contain all the microservices that make up our application:
 

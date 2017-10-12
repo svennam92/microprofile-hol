@@ -9,11 +9,7 @@
 
 ### Install the Bluemix CLI Developer Plugin
 
-You should have already installed the Bluemix CLI as explained in the [main README](../README.md). Install the dev plugin for the CLI by running the following in your terminal:
-
-```
-bx plugin install -r bluemix dev
-```
+You should have already installed the Bluemix CLI and Dev plugin as explained in the [main README](../README.md).
 
 #### Make sure you're logged in
 

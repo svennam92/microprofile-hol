@@ -10,28 +10,24 @@ Ensure that your cluster has finished deploying. Navigate to your [dashboard on 
 If it's still not ready, you'll need to wait before the following steps. Things you can do while you wait:
 
 * Check out the [Bonus exercise](ex_bonus.md) to learn how to create new microservices using the [Microservice Builder](https://developer.ibm.com/microservice-builder/)
-* Navigate the microservices in your `~/JavaMicroprofile` directory to familiarize yourself with the application architecture. For a more guided experience, check out the resources on [microprofile.io](https://microprofile.io/project/eclipse/microprofile-conference).
+* Navigate the microservices in this repo to familiarize yourself with the application architecture. For a more guided experience, check out the resources on [microprofile.io](https://microprofile.io/project/eclipse/microprofile-conference).
 
 If the cluster is not working or has not spwaned in time for you to continue with the lab, please see the [instructions here](backup.md).
 
 ### Configure CLI to connect to your Kubernetes Cluster
 
-You should have already installed the Bluemix CLI as explained in the [main README](../README.md). Now, install the containers plugin for the CLI by running the following in your terminal:
+You should have already installed the Bluemix CLI as explained in the [main README](../README.md). If you haven't already, make sure you're logged in: `bx login`. If prompted, use API endpoint `api.ng.bluemix.net`
 
-```
-bx plugin install container-service -r Bluemix
-```
-
-If you haven't already, make sure you're logged in: `bx login`. If prompted, use API endpoint `api.ng.bluemix.net`
+Run `bx cs init` to initialize your container-service plugin.
 
 Run `bx cs clusters` to see all your clusters in Bluemix - there should only be one.
 
-Run `bx cs cluster-config <cluster_name>` to download the configuration file that allows you to access the cluster. It tells you to run a `export` command. Copy-paste and execute that command.
+Run `bx cs cluster-config <cluster_name>` to download the configuration file that allows you to access the cluster. It tells you to run a `export` command. Copy-paste to execute that command.
 
 Run `kubectl cluster-info` to ensure that you're connected to the running Kubernetes Cluster. You should see something like this:
 
 ```
-⌞~/MicroprofileHOL⌟ ➤ kubectl cluster-info
+$ kubectl cluster-info
 Kubernetes master is running at https://184.173.44.62:27192
 Heapster is running at https://184.173.44.62:27192/api/v1/proxy/namespaces/kube-system/services/heapster
 KubeDNS is running at https://184.173.44.62:27192/api/v1/proxy/namespaces/kube-system/services/kube-dns
@@ -43,8 +39,6 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ## Helm - Streamline Kubernetes installations
 
 Helm is a tool that allows you to manage Kubernetes "charts". Charts are pre-configured Kubernetes resources.
-
-_Note: Lab Attendees - this CLI tool is already installed on your VMs_
 
 For our microservices to work, we need to deploy a fabric layer provided to us by Microservice Builder, an IBM tool to streamline development. This fabric allows us to connect up Liberty Microprofile instances with other services. In addition, we'll also deploy a sample ELK stack which allows us to retrieve metrics for our application in a Kibana dashboard.
 

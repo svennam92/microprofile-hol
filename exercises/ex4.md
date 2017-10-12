@@ -5,7 +5,7 @@ In this exercise, we'll demonstrate why Kubernetes deployments are so easy and p
 
 ### Customize deploy manifests
 
-Change the image name given in the respective deployment YAML files for all the projects in the manifests directory with the newly built/pushed image names. You'll have to do once for each of the following files:
+Change the image name given in the respective deployment YAML files for all the projects in the `manifests` directory (in the top-level directory in the repo) with the newly built/pushed image names. You'll have to do once for each of the following files:
 
 ```
 deploy-schedule.yaml
@@ -36,17 +36,17 @@ NAME             STATUS    AGE
 In my case it looks like this:
 
 ```
-        env:
-          - name: SOURCE_IP
-           #change the value of IP with Kubernetes EXTERNAL-IP
-            value: xxx.xxx.xx.xxx
+  env:
+    - name: SOURCE_IP
+      #change the value of IP with Kubernetes EXTERNAL-IP
+      value: xxx.xxx.xx.xxx
 ```
 to
 ```
-        env:
-          - name: SOURCE_IP
-           #change the value of IP with Kubernetes EXTERNAL-IP
-            value: 10.76.193.96
+  env:
+    - name: SOURCE_IP
+      #change the value of IP with Kubernetes EXTERNAL-IP
+      value: 10.76.193.96
 ```
 
 ### Double check prerequisites
@@ -65,10 +65,10 @@ secret-generator-deploy-bj1jj           0/1       Completed   0          11m  # 
 
 ### Deploy microservices using manifests
 
-Now, cd back to the main directory with `cd ~/JavaMicroprofile` and deploy the microservices with the command `kubectl create -f manifests`. You should promptly see the following:
+Now, cd back to the top-level directory and deploy the microservices with the command `kubectl create -f manifests`. You should promptly see the following:
 
 ```
-⌞~/MicroprofileHOL⌟ ➤ kubectl create -f manifests
+$ kubectl create -f manifests
 job "cloudant-secret-generator-deploy" created
 persistentvolume "cloudant-pv" created
 persistentvolumeclaim "cloudant-pv-claim" created

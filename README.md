@@ -8,13 +8,9 @@ In this hands-on lab, you will follow a set of exercises to deploy Java microser
 
 ### Prerequisites
 
-The VM you're using for the lab at Java One 2017 is already preconfigured with most of the dependencies. However, there are a few things you'll need to do manually.
-
-_Note: Your VM password is `password`. You'll use this for `sudo` commands or if you get logged out_
-
 #### Sign up for a Bluemix Account
 
-Sign up for a new account on Bluemix. It is recommended that you create a new account from the [Bluemix Dashboard](https://console.ng.bluemix.net/) if the trial on your existing account has expired.
+Sign up for a new account on the [Bluemix Dashboard](https://console.ng.bluemix.net/).
 
 #### Spin up a new Kubernetes Cluster
 
@@ -24,27 +20,48 @@ Click the Create Cluster button, choose the "Lite" cluster option and give it a 
 
 <img src="images/newcluster.png"  width="800">
 
-#### Bluemix CLI (Java One Lab Attendees - Ignore, already installed)
+#### Bluemix CLI
 
 Install by Bluemix CLI - Find the appropriate installer and follow the instructions [here](https://console.bluemix.net/docs/cli/index.html#downloads).
 
-When logging in with `bx login`, use API endpoint `api.ng.bluemix.net`
+Login to the CLI with `bx login`. When prompted, use API endpoint `api.ng.bluemix.net`
 
-#### Install Docker
-
-Installing Docker allows you to create Docker images, publish them to the registry and run them natively as virtual machines.
+You'll need to install a couple of plugins for the Bluemix CLI as well:
 
 ```
-# Download the script
-curl -fsSL get.docker.com -o get-docker.sh
-
-# Execute the script
-sudo sh get-docker.sh
-
-# Allow Docker usage as non-root user
-sudo usermod -aG docker $(whoami)
+bx plugin install dev -r Bluemix
 ```
-Log out and log back in.
+
+```
+bx plugin install container-service -r Bluemix
+# Initialize and verify plugin install
+bx cs init
+```
+
+#### Install Other Dependencies
+
+Install the following tools:
+* [Docker CE](https://www.docker.com/community-edition)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* [helm](https://github.com/kubernetes/helm)
+* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [Maven](https://maven.apache.org/install.html)
+
+Verify you have the proper versions (newer should be fine):
+```
+$ docker -v
+Docker version 17.09.0-ce, build afdb6d4
+
+# Note this command will fail when checking the server version - it's expected as your CLI is not configured to connect to a server yet.
+$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"5", GitVersion:"v1.5.6", GitCommit:"114f8911f9597be669a747ab72787e0bd74c9359", GitTreeState:"clean", BuildDate:"2017-03-28T13:54:20Z", GoVersion:"go1.7.4", Compiler:"gc", Platform:"linux/amd64"}
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+
+# Note this command will fail when trying to connect to Tiller, we'll configure this later
+$ helm version
+Client: &version.Version{SemVer:"v2.6.1", GitCommit:"bbc1f71dc03afc5f00c6ac84b9308f8ecb4f39ac", GitTreeState:"clean"}
+Error: cannot connect to Tiller
+```
 
 ### Exercises
 

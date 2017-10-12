@@ -6,11 +6,11 @@ Clone or download this repository and cd to it.
 Here you should see a number of directories. Primarily, the following folders contain all the microservices that make up our application:
 
 ```
-sample.microservicebuilder.schedule
-sample.microservicebuilder.session
-sample.microservicebuilder.speaker
-sample.microservicebuilder.vote
-sample.microservicebuilder.web-app
+schedule-app
+session-app
+speaker-app
+vote-app
+web-app
 ```
 
 Each of these repos represents a MicroProfile Java microservice. Notably, you'll see that each of these repos has a server.xml file - this is a config file that tells the Liberty runtime which features to enable for the corresponding microservice. You'll note that each has the following `server.xml` entry:
@@ -31,19 +31,19 @@ You may want to run your cluster locally when in development mode. To do so, you
 The microservices have already been cloned. However, you should run through all the folders to build the dependencies and ensure they passing tests. You'll be running build commands with Maven - a software project management tool used to manage the dependencies and project structure of your microservices. Run the following commands:
 
 ```
-cd sample.microservicebuilder.schedule
+cd schedule-app
 mvn clean package
 
-cd ../sample.microservicebuilder.session
+cd ../session-app
 mvn clean package
 
-cd ../sample.microservicebuilder.speaker
+cd ../speaker-app
 mvn clean package
 
-cd ../sample.microservicebuilder.vote
+cd ../vote-app
 mvn clean package
 
-cd ../sample.microservicebuilder.web-app
+cd ../web-app
 mvn clean package
 ```
 

@@ -15,19 +15,19 @@ Be sure to login first using `docker login`.
 When running the following steps, make sure to replace `<docker_namespace>` with your own Docker ID. In my case, it's `svennam92`.
 
 ```
-docker build -t <docker_namespace>/microservice-webapp sample.microservicebuilder.web-app
+docker build -t <docker_namespace>/microservice-webapp web-app
 docker push <docker_namespace>/microservice-webapp
 
-docker build -t <docker_namespace>/microservice-vote-cloudant sample.microservicebuilder.vote
+docker build -t <docker_namespace>/microservice-vote-cloudant vote-app
 docker push <docker_namespace>/microservice-vote-cloudant
 
-docker build -t <docker_namespace>/microservice-schedule sample.microservicebuilder.schedule
+docker build -t <docker_namespace>/microservice-schedule schedule-app
 docker push <docker_namespace>/microservice-schedule
 
-docker build -t <docker_namespace>/microservice-speaker sample.microservicebuilder.speaker
+docker build -t <docker_namespace>/microservice-speaker speaker-app
 docker push <docker_namespace>/microservice-speaker
 
-docker build -t <docker_namespace>/microservice-session sample.microservicebuilder.session
+docker build -t <docker_namespace>/microservice-session session-app
 docker push <docker_namespace>/microservice-session
 
 docker build -t <docker_namespace>/nginx-server nginx

@@ -14,7 +14,7 @@ spec:
       containers:
       - name: microservice-schedule
         #change the image name
-        image: journeycode/microservice-schedule
+        image: svennam92/microservice-schedule
         ports:
           - containerPort: 9080
         imagePullPolicy: Always

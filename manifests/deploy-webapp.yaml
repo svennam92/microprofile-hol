@@ -14,7 +14,7 @@ spec:
       containers:
       - name: microservice-webapp
         #change the image name
-        image: journeycode/microservice-webapp
+        image: svennam92/microservice-webapp
         ports:
           - containerPort: 9080
 ---

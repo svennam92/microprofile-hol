@@ -6,7 +6,7 @@ In this hands-on lab, you will learn how to deploy Java microservices based on [
 
 ## Application Architecture
 
-The application you're working with is a microservices-based conference application which tracks the sessions, schedules, speakers and votes for a fictitious event. It's made up a of a number of back-end microservices as well as a front-end web application. It's fronted by a NGINX load balancer.
+In this lab, you'll work with a microservices-based conference application which tracks the sessions, schedules, speakers and votes for a fictitious event. It's made up a of a number of back-end microservices as well as a front-end web application. It's fronted by a NGINX load balancer.
 
 ![Architecture](images/Architecture.png)
 
@@ -18,17 +18,27 @@ Sign up for a new account on the [Bluemix Dashboard](https://console.ng.bluemix.
 
 ### Spin up a new Kubernetes Cluster
 
+***
+
+> TODO: Fix Screenshot and Instructions
+
 Access the Bluemix Containers dashboard at [https://console.bluemix.net/containers-kubernetes/home/clusters](https://console.bluemix.net/containers-kubernetes/home/clusters)
 
 Click the Create Cluster button, choose the "Lite" cluster option and give it a name like "MicroprofileHOL". It should take 10-20 minutes for a new Kubernetes cluster to get spun-up. You can continue for now - we'll verify that the cluster is running in [Exercise 3](ex3.md).
 
 ![New Cluster](images/newcluster.png)
 
-### Install the Bluemix CLI
+***
 
-Install by Bluemix CLI - Find the appropriate installer and follow the instructions [here](https://console.bluemix.net/docs/cli/index.html#downloads).
+### Install the IBM Cloud CLI
+
+Install by IBM Cloud (Bluemix) CLI - Find the appropriate installer and follow the instructions [here](https://console.bluemix.net/docs/cli/index.html#downloads).
+
+***
+> TODO FIX INSTRUCTION FOR INDIA LAB
 
 Login to the CLI with `bx login`. When prompted, use API endpoint `api.ng.bluemix.net`
+***
 
 You'll need to install a couple of plugins for the Bluemix CLI as well:
 
@@ -60,13 +70,8 @@ Install the following tools and dependencies:
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [helm](https://github.com/kubernetes/helm)
   * Need to add this to your PATH.
-* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* [Maven](https://maven.apache.org/install.html)
-  * Need to add this to your PATH.
 
-Note that you may have to add some of these utilties to your PATH after installing. The following step will verify that all your utilities are working properly. Note that you may also have to restart your terminal.
-
-Verify you have the proper versions (newer is fine):
+Verify that you've installed them properly by opening a new terminal and running the following commands. Make sure your versions are either newer or matches the ones below.
 
 ```
 $ docker -v
@@ -81,144 +86,17 @@ The connection to the server localhost:8080 was refused - did you specify the ri
 $ helm version
 Client: &version.Version{SemVer:"v2.6.1", GitCommit:"bbc1f71dc03afc5f00c6ac84b9308f8ecb4f39ac", GitTreeState:"clean"}
 Error: cannot connect to Tiller
-
-$ java -version
-java version "1.8.0_60"
-Java(TM) SE Runtime Environment (build 1.8.0_60-b27)
-Java HotSpot(TM) 64-Bit Server VM (build 25.60-b23, mixed mode)
-
-$ mvn --version
-Apache Maven 3.5.0 (ff8f5e7444045639af65f6095c62210b5713f426; 2017-04-03T14:39:06-05:00)
-Maven home: /Users/svennam/Downloads/apache-maven-3.5.0
-Java version: 1.8.0_60, vendor: Oracle Corporation
-Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre
-Default locale: en_US, platform encoding: UTF-8
-OS name: "mac os x", version: "10.12.1", arch: "x86_64", family: "mac"
 ```
 
-# Step 1: View, edit and build your MicroProfile Java repositories
-
-For this, refer to the git repository you cloned from the code pattern.
-
-Here you should see a number of directories. Primarily, the following folders contain all the microservices that make up the application:
-
-```
-schedule-app
-session-app
-speaker-app
-vote-app
-web-app
-```
-
-Each of these repos represents a MicroProfile Java microservice. Notably, you'll see that each of these repos has a server.xml file - this is a config file that tells the Liberty runtime which features to enable for the corresponding microservice. You'll note that each has the following `server.xml` entry:
-
-```
-<feature>microProfile-1.0</feature>
-```
-
-This feature contains a set of capabilities (and other _features_) that has been decided by the MicroProfile community to serve the common requirements for microservice development.
-
-## Developing Java Microservices
-
-This lab is focused on the deployment portion of these microservices. However, it's fairly straightforward to make changes to the individual microservices. Within each directory is a Maven based project structure which can be imported into Eclipse or your favorite IDE. To make updates to the microservice, simply make the code changes and run `mvn package` to rebuild the application. This creates a newly compiled and packaged `.war` file in the `target` directory.
-
-You may want to run your cluster locally when in development mode. To do so, you would use a tool called [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/). However, in this set of exercises we'll be deploying to the dedicated Kubernetes cluster on IBM's Cloud - you should have created this as part of the [prerequisites](#Prerequisites).
-
-## Build your microservices
-The microservices have already been cloned. However, you should run through all the folders to build the dependencies and ensure they passing tests. You'll be running build commands with Maven - a software project management tool used to manage the dependencies and project structure of your microservices. Run the following commands:
-
-```
-cd schedule-app
-mvn clean package
-
-cd ../session-app
-mvn clean package
-
-cd ../speaker-app
-mvn clean package
-
-cd ../vote-app
-mvn clean package
-
-cd ../web-app
-mvn clean package
-```
-
-At each step of the way, you should have seen a message indicating `BUILD SUCCESS`. Each build creates its own `.war` file in the `target` folder.
-
-## Next Steps
-
-You're now ready to create Docker images for each of the Microprofile-based Java microservices.
-
-# Step 2: Build and push each of your microservices to DockerHub
-
-## Prerequisites
-
-[Create an account on DockerHub](https://hub.docker.com/). This gives you a namespace on their registry to push your Docker images. This namespace usually matches your Docker ID.
-
-## Publish your Docker images
-
-In this step, you'll build and push the Docker images representing each of the microservices as well as an Nginx loadbalancer. This is possible through the `Dockerfile`s that are present in each of the microservice directories. The Dockerfile for the NGINX layer is located at `nginx/Dockerfile`.
-
-Dockerfiles are descriptor files that tell Docker the various dependencies needed to package an application along with its source-code and dependencies into a container. Let's quickly walkthrough the Dockerfile for `session-app`:
-
-```
-# The first line tells Docker to pull a "base" image that starts our container with
-# a set dependencies like a basic operation system, Java, Liberty Microprofile, etc
-FROM websphere-liberty:microProfile
-
-# Executes a script that comes with the base image to install a feature to our server
-RUN installUtility install  --acceptLicense logstashCollector-1.0
-
-# Copies over our Liberty server config file into the container
-COPY server.xml /config/server.xml
-
-# Copies the locally built "war" application into the proper directory within the container
-COPY target/microservice-session-1.0.0-SNAPSHOT.war /config/apps/session.war
-```
-
-With these four simple instructions, Docker creates an image for executing each of your microservices. There is a similar `Dockerfile` for your load-balancer which starts with the `nginx` base image, instead of `websphere-liberty:microProfile`.
-
-## Build and Push Docker Images to Docker Hub
-When running the following steps, make sure to replace `<docker_namespace>` with your own Docker ID. In my case, it's `svennam92`. Yours will be your own unique ID. Be sure to login first using `docker login`.
-
-```
-docker login
-
-docker build -t <docker_namespace>/microservice-webapp web-app
-docker push <docker_namespace>/microservice-webapp
-
-docker build -t <docker_namespace>/microservice-vote-cloudant vote-app
-docker push <docker_namespace>/microservice-vote-cloudant
-
-docker build -t <docker_namespace>/microservice-schedule schedule-app
-docker push <docker_namespace>/microservice-schedule
-
-docker build -t <docker_namespace>/microservice-speaker speaker-app
-docker push <docker_namespace>/microservice-speaker
-
-docker build -t <docker_namespace>/microservice-session session-app
-docker push <docker_namespace>/microservice-session
-
-docker build -t <docker_namespace>/nginx-server nginx
-docker push <docker_namespace>/nginx-server
-```
-
-Now the images are available in a public registry. You need them in an accessible location because when you deploy your microservices to the Kubernetes cluster, you won't upload them directly from your laptop. Instead, you'll simply upload a manifest file to the cluster. This manifest tells your cluster to fetch and download the registry images directly from the registry - this saves time and allows your cluster to automatically keep our microservices up-to-date.
-
-## Next steps
-
-Next you'll push deploy some prerequisites as well as your microservices to the Kubernetes cluster.
-
-# Step 3: Use Helm to deploy fabric prerequisites
+# Step 1: Use Helm to Deploy Curated Dependencies
 
 ## Prerequisites
 
 Ensure that your cluster has finished deploying. Navigate to your [dashboard on Bluemix](https://console.bluemix.net/containers-kubernetes/home/clusters) and double check that there is a green "Ready" icon.
 
-If it's still not ready, you'll need to wait before the following steps. While you wait, you can navigate the microservices in this repo to familiarize yourself with the application architecture. For a more guided experience, check out the resources on [microprofile.io](https://microprofile.io/project/eclipse/microprofile-conference).
+If it's still not ready, you'll need to wait before proceeding. In the meantime, you can follow the optional step to [build the microservices used in this lab](README-buildAndDeploy.md). To learn more about this project which is based on Java MicroProfile, check out the resources on [microprofile.io](https://microprofile.io/project/eclipse/microprofile-conference).
 
-## Configure CLI to connect to your Kubernetes Cluster
+### Configure CLI to connect to your Kubernetes Cluster
 
 You should have already installed the Bluemix CLI as explained in the [main README](../README.md). If you haven't already, make sure you're logged in: `bx login`. If prompted, use API endpoint `api.ng.bluemix.net`.
 
@@ -244,7 +122,9 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 Helm is a tool that allows you to manage Kubernetes "charts". Charts are pre-configured Kubernetes resources.
 
-For your microservices to work, you need to deploy a fabric layer provided by Microservice Builder, an IBM tool to streamline development. This fabric allows you to connect up Liberty Microprofile instances with other services. The fabric layer greatly sped up development of this application and is required for execution of the app itself. In addition, you'll also deploy a sample ELK stack which allows you to retrieve metrics for the application in a Kibana dashboard.
+Later on, you'll deploy your microservices as Docker images from DockerHub to your cluster. However, the microservices need a set of dependencies to work properly - we can deploy these dependencies using Helm.
+
+You'll deploy a fabric layer provided by Microservice Builder, an IBM tool to streamline development. This fabric allows you to connect up Liberty Microprofile instances with other services. The MicroProfile fabric layer greatly sped up development of this application and is required for execution of the app itself. In addition, you'll also deploy a sample ELK stack which allows you to retrieve metrics for the application in a Kibana dashboard.
 
 ### Installing prerequisites to our cluster
 
@@ -285,33 +165,35 @@ secret-generator-deploy-znv3c            0/1       ContainerCreating   0        
 
 ## Next steps
 
-Now that you've kicked off the prereq installation on the cluster, you'll start dockerizing the microservices you compiled in the previous step.
+This lab is focused on the deployment of microservices to a Kubernetes cluster. However, it's also important to understand the development flow for creating Docker containers that can be deployed to Kubernetes. To learn how to build your microservices and deploy your containers to DockerHub, skip to the optional steps [Building and Developing your Microservices](README-buildAndDeploy.md).
 
-# Step 4: Deploy your microservices to your Kubernetes cluster
+To continue with deploying prebuilt microservices already on DockerHub, proceed to the next step.
 
-In this exercise, you'll see why Kubernetes deployments are so easy and powerful. So far you've created a cluster, converted all of the microservices into containers and deployed the prerequisite dependencies to the cluster using Helm charts. Now you'll push these containers.
+# Step 2: Deploy your microservices to your Kubernetes cluster
 
-## Customize deploy manifests
+In this exercise, you'll see why Kubernetes deployments are quick to configure. So far you've created a cluster and deployed the prerequisite dependencies to the cluster using Helm charts. Now you'll push your microservices to your cluster.
 
-Change the image name given in the respective deployment YAML files for all the projects in the `manifests` directory (in the top-level directory in the repo) with the newly built/pushed image names. You'll have to do once for each of the following files:
+## Double check prerequisites
 
-```
-deploy-schedule.yaml
-deploy-session.yaml
-deploy-speaker.yaml
-deploy-vote.yaml
-deploy-webapp.yaml
-```
-
-For example, in the `manifests/deploy-speaker.yaml` file, change the following except with your own Docker Hub namespace:
+Before you start deploying your application, make sure the Microservice Builder Add-ons are installed and running. In addition, make sure that the `key-retreival-deploy` and `secret-generator-deploy` jobs have completed.
 
 ```
-image: journeycode/microservice-speaker
-to
-image: svennam92/microservice-speaker
+$ kubectl get pods --show-all
+NAME                                    READY     STATUS      RESTARTS   AGE
+fabric-zipkin-4284087195-d6s1t          1/1       Running     0          11m
+key-retrieval-deploy-gkr9n              0/1       Completed   0          11m  # Make sure this job is completed
+kibana-dashboard-deploy-rd0q5           1/1       Running     0          11m 
+sample-elk-sample-elk-461262821-rp1rl   3/3       Running     0          11m 
+secret-generator-deploy-bj1jj           0/1       Completed   0          11m  # Make sure this job is completed
 ```
 
-Then, set the value of SOURCE_IP env variable present in the `manifests/deploy-nginx.yaml` file with the IP of the node. 
+## Deploy microservices using manifests
+
+You're ready to deploy the microservices now. Deployments to kubernetes are managed with manifest files - one of the most important things defined in the manifest file is the Docker image itself. Once you deploy a manifest, the cluster will pull the image you've defined in the manifest and follow the other instructions (also in the manifest) to deploy it.
+
+First, we need to configure the NGINX gateway IP address to refer to your cluster's external IP. This allows NGINX to properly forward your requests. Follow the instructions below to set the value of the SOURCE_IP env variable present in the `manifests/deploy-nginx.yaml` file with the IP of the node. 
+
+If you aren't already in the root of this git repository, `cd` back to the top-level directory. 
 
 Get the IP of the node
 
@@ -337,23 +219,7 @@ to
       value: 10.76.193.96
 ```
 
-## Double check prerequisites
-
-Before you start deploying your application, make sure the Microservice Builder Add-ons are installed and running.
-
-```
-$ kubectl get pods --show-all
-NAME                                    READY     STATUS      RESTARTS   AGE
-fabric-zipkin-4284087195-d6s1t          1/1       Running     0          11m
-key-retrieval-deploy-gkr9n              0/1       Completed   0          11m  # Make sure this job is completed
-kibana-dashboard-deploy-rd0q5           1/1       Running     0          11m 
-sample-elk-sample-elk-461262821-rp1rl   3/3       Running     0          11m 
-secret-generator-deploy-bj1jj           0/1       Completed   0          11m  # Make sure this job is completed
-```
-
-## Deploy microservices using manifests
-
-Now, `cd` back to the top-level directory and deploy the microservices with the command `kubectl create -f manifests`. You should promptly see the following:
+Next, we're ready to deploy the microservices and NGINX gateway. Run the command `kubectl create -f manifests`. This will deploy all the manifest files in the `manifests` directory. You should promptly see the following:
 
 ```
 $ kubectl create -f manifests
@@ -418,7 +284,7 @@ To access your application, navigate to `<PUBLIC_IP>:30056`. Spend a moment to c
 
 Now that you've deployed the microservices, switch hats to a typical Operations engineer who would manage these deployments.
 
-# Step 5: Managing your Kubernetes Cluster
+# Step 3: Managing your Kubernetes Cluster
 
 ## Kubernetes Dashboard
 
@@ -468,10 +334,11 @@ The `Dashboard` tab allows you to create a dashboard of data visualizations. Go 
 
 # Next Steps and More Resources
 
+At this point, you can skip back to the optional step to [build and deploy](README-buildAndDeploy.md) your Java microservices from your local machine.
+
 To learn more about the microservices that we deployed and how they utilize the Java Microprofile technology, see the [GitHub project](https://github.com/eclipse/microprofile-conference). There are extensive instructions on how to actually develop these microservices.
 
 On the IBM Developer Works website, see the [full journey](https://developer.ibm.com/code/journey/deploy-microprofile-java-microservices-on-kubernetes/) that explains the steps we followed, architecture diagrams, blogs, utilized technologies and more.
 
 Get started with running a Kubernetes cluster on your local machine for development with [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/).
-
 Manage your Kubernetes cluster on [IBM Cloud](https://console.bluemix.net/containers-kubernetes/home/clusters).

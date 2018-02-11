@@ -12,23 +12,17 @@ In this lab, you'll work with a microservices-based conference application which
 
 ## Prerequisites
 
-### Sign up for a Bluemix Account
+### Sign up for an IBM Cloud Account
 
-Sign up for a new account on the [Bluemix Dashboard](https://console.ng.bluemix.net/).
+Sign up for a new account on the [IBM Cloud page](https://console.ng.bluemix.net/).
 
 ### Spin up a new Kubernetes Cluster
 
-***
+Access the IBM Cloud Containers dashboard at [https://console.bluemix.net/containers-kubernetes/home/clusters](https://console.bluemix.net/containers-kubernetes/home/clusters)
 
-> TODO: Fix Screenshot and Instructions
-
-Access the Bluemix Containers dashboard at [https://console.bluemix.net/containers-kubernetes/home/clusters](https://console.bluemix.net/containers-kubernetes/home/clusters)
-
-Click the Create Cluster button, choose the "Lite" cluster option and give it a name like "MicroprofileHOL". It should take 10-20 minutes for a new Kubernetes cluster to get spun-up. You can continue for now - we'll verify that the cluster is running in [Exercise 3](ex3.md).
+Click the Create Cluster button, choose the "Free" cluster option and give it a name like "KubernetesLab". It should take 10-20 minutes for a new Kubernetes cluster to get spun-up. You can continue for now and we'll verify that it has started in the first step.
 
 ![New Cluster](images/newcluster.png)
-
-***
 
 ### Install the IBM Cloud CLI
 
@@ -40,7 +34,7 @@ Install by IBM Cloud (Bluemix) CLI - Find the appropriate installer and follow t
 Login to the CLI with `bx login`. When prompted, use API endpoint `api.ng.bluemix.net`
 ***
 
-You'll need to install a couple of plugins for the Bluemix CLI as well:
+You'll need to install a couple of plugins for the IBM Cloud CLI as well:
 
 ```
 bx plugin install dev -r Bluemix
@@ -92,17 +86,21 @@ Error: cannot connect to Tiller
 
 ## Prerequisites
 
-Ensure that your cluster has finished deploying. Navigate to your [dashboard on Bluemix](https://console.bluemix.net/containers-kubernetes/home/clusters) and double check that there is a green "Ready" icon.
+Ensure that your cluster has finished deploying. Navigate to your [dashboard on IBM Cloud](https://console.bluemix.net/containers-kubernetes/home/clusters) and double check that there is a green "Ready" icon.
+
+![ClusterReady](images/clusterready.png)
 
 If it's still not ready, you'll need to wait before proceeding. In the meantime, you can follow the optional step to [build the microservices used in this lab](README-buildAndDeploy.md). To learn more about this project which is based on Java MicroProfile, check out the resources on [microprofile.io](https://microprofile.io/project/eclipse/microprofile-conference).
 
 ### Configure CLI to connect to your Kubernetes Cluster
 
-You should have already installed the Bluemix CLI as explained in the [main README](../README.md). If you haven't already, make sure you're logged in: `bx login`. If prompted, use API endpoint `api.ng.bluemix.net`.
+> TODO: FIX API ENDPOINT for India Lab
+
+You should have already installed the IBM Cloud CLI as explained in the previous steps. If you haven't already, make sure you're logged in: `bx login`. If prompted, use API endpoint `api.ng.bluemix.net`.
 
 Run `bx cs init` to initialize your container-service plugin.
 
-Run `bx cs clusters` to see all your clusters in Bluemix - there should only be one.
+Run `bx cs clusters` to see all your clusters in IBM Cloud - there should only be one.
 
 Run `bx cs cluster-config <cluster_name>` to download the configuration file that allows you to access the cluster. It tells you to run a `export` command. Copy-paste to execute that command.
 
@@ -165,7 +163,7 @@ secret-generator-deploy-znv3c            0/1       ContainerCreating   0        
 
 ## Next steps
 
-This lab is focused on the deployment of microservices to a Kubernetes cluster. However, it's also important to understand the development flow for creating Docker containers that can be deployed to Kubernetes. To learn how to build your microservices and deploy your containers to DockerHub, skip to the optional steps [Building and Developing your Microservices](README-buildAndDeploy.md).
+This lab is focused on the deployment of microservices to a Kubernetes cluster. However, it's also important to understand the development flow for creating Docker containers that can be deployed to Kubernetes. To learn how to build your microservices and deploy your containers to DockerHub, skip to the optional steps [Building and Developing your Microservices](README-buildAndDeploy.md). Note that this may take some time depending on your internet connection.
 
 To continue with deploying prebuilt microservices already on DockerHub, proceed to the next step.
 
@@ -175,7 +173,7 @@ In this exercise, you'll see why Kubernetes deployments are quick to configure. 
 
 ## Double check prerequisites
 
-Before you start deploying your application, make sure the Microservice Builder Add-ons are installed and running. In addition, make sure that the `key-retreival-deploy` and `secret-generator-deploy` jobs have completed.
+Before you start deploying your application, make sure the Microservice Builder Add-ons are installed and running. In addition, make sure that the `key-retreival-deploy` and `secret-generator-deploy` jobs have completed. Verify this by running the `kubectl get pods --show-all` command and ensuring it looks like the output below.
 
 ```
 $ kubectl get pods --show-all
@@ -189,7 +187,7 @@ secret-generator-deploy-bj1jj           0/1       Completed   0          11m  # 
 
 ## Deploy microservices using manifests
 
-You're ready to deploy the microservices now. Deployments to kubernetes are managed with manifest files - one of the most important things defined in the manifest file is the Docker image itself. Once you deploy a manifest, the cluster will pull the image you've defined in the manifest and follow the other instructions (also in the manifest) to deploy it.
+You're ready to deploy the microservices now. Deployments to kubernetes are managed with manifest files - one of the most important things defined in the manifest file is the Docker image itself. Once you deploy a manifest, the cluster will pull the image you've defined in the manifest and follow the other instructions (also in the manifest) to deploy it. The images are already pushed to DockerHub so we simply need to tell our cluster where to pull it from.
 
 First, we need to configure the NGINX gateway IP address to refer to your cluster's external IP. This allows NGINX to properly forward your requests. Follow the instructions below to set the value of the SOURCE_IP env variable present in the `manifests/deploy-nginx.yaml` file with the IP of the node. 
 
@@ -272,7 +270,7 @@ It'll look like this once it's ready:
 
 ## Access your Application
 
-Use the public IP of your Kubernetes cluster to access the Web Services Conference Application. You can find the Public IP of your cluster on the [Bluemix Containers Dashboard](https://console.bluemix.net/containers-kubernetes/home/clusters). Click your cluster, then click "Worker Nodes" along the leftside. The Public IP is listed by the worker node.
+Use the public IP of your Kubernetes cluster to access the Web Services Conference Application. You can find the Public IP of your cluster on the [IBM Cloud Containers Dashboard](https://console.bluemix.net/containers-kubernetes/home/clusters). Click your cluster, then click "Worker Nodes" along the leftside. The Public IP is listed by the worker node.
 
 ![Public IP](images/PublicIP.png)
 
